@@ -5,6 +5,7 @@ import unicodedata
 
 from logger import Logger
 from handler_command import HandlerCommand
+import json
 
 key_world = 'pedro'
 
@@ -18,11 +19,15 @@ class ListenerVoice:
         self.texts_queue = []
         self.handler_command = HandlerCommand()
         self.logger = Logger()
+        self.grammar = [key_world, "[unk]"]
 
     def start(self):
         model = Model(self.model_dir)
-        self.recognizer = KaldiRecognizer(model, 16000)
+        extra_gramma = self.handler_command.get_phrases()
+        self.add_gram(extra_gramma)
 
+        grammar_str = json.dumps(self.grammar)
+        self.recognizer = KaldiRecognizer(model, 16000, grammar_str)
         mic = pyaudio.PyAudio()
         self.stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
         self.stream.start_stream()
@@ -34,7 +39,8 @@ class ListenerVoice:
         while True:
             data = self.stream.read(4096)
             if self.recognizer.AcceptWaveform(data):
-                json_text = self.recognizer.Result()
+                json_text = self.recognizer.FinalResult()
+                self.logger.debug("Text recognizer: %s", json_text)
                 text = f"{json_text[14:-3]}"
                 if not text:
                     continue
@@ -69,3 +75,7 @@ class ListenerVoice:
             return None
 
         return sub_strings[1].strip()
+
+    def add_gram(self, extra):
+        for phrase in extra:
+            self.grammar.append(f"{key_world} {phrase}")

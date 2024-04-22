@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 class Command:
     @abstractmethod
-    def get_phrase(self):
+    def get_phrases(self):
         pass
 
     @abstractmethod

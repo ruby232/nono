@@ -36,7 +36,13 @@ class HandlerCommand:
 
     def get_command(self, phrase):
         for command in self.commands:
-            # @todo, hay que mejorar esto
-            if command.get_phrase() == phrase:
+            phrases = command.get_phrases()
+            if phrase in phrases:
                 return command
         return None
+
+    def get_phrases(self):
+        phrases = []
+        for command in self.commands:
+            phrases.extend(command.get_phrases())
+        return phrases
