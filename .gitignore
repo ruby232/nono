@@ -1,3 +1,4 @@
 .idea
 vosk-models
 debug.log
+__pycache__
