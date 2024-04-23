@@ -10,3 +10,9 @@ Para el reconocimiento de voz se utiliza [Vosk](https://alphacephei.com/vosk/).
 ## Configurar
 
 ## Como contribuir
+
+## Todo
+- Escribir documentacio
+- Escribir articulo
+- Mejorar el sistema para comprar las clases
+- Agregar palabras al modelo

@@ -1,11 +1,19 @@
-from abc import abstractmethod
+import subprocess
 
 
 class Command:
-    @abstractmethod
-    def get_phrases(self):
-        pass
+    def __init__(self, _name, _run, _phrases):
+        self.name = _name
+        self.run = _run
+        self.phrases = _phrases
 
-    @abstractmethod
+    def get_phrases(self):
+        return self.phrases
+
+    def is_phrase(self, phrase):
+        # @todo, esto hay que mejorarlo
+        return phrase in self.phrases
+
+
     def execute(self):
-        pass
+        proceso = subprocess.Popen(self.run)

@@ -3,23 +3,23 @@ import pyaudio
 import re
 import unicodedata
 
+from config import Config
 from logger import Logger
 from handler_command import HandlerCommand
 import json
 
-key_world = 'pedro'
-
 
 class ListenerVoice:
 
-    def __init__(self, model_dir):
+    def __init__(self, model_dir: str, _config: Config):
+        self.config = _config
         self.stream = None
         self.recognizer = None
         self.model_dir = model_dir
         self.texts_queue = []
-        self.handler_command = HandlerCommand()
+        self.handler_command = HandlerCommand(_config)
         self.logger = Logger()
-        self.grammar = [key_world, "[unk]"]
+        self.grammar = [self.config.key_world, "[unk]"]
 
     def start(self):
         model = Model(self.model_dir)
@@ -67,10 +67,10 @@ class ListenerVoice:
         return clear
 
     def is_command(self, sentence):
-        return key_world in sentence
+        return self.key_world in sentence
 
     def extract_command(self, sentence):
-        sub_strings = sentence.split(key_world)
+        sub_strings = sentence.split(self.key_world)
         if len(sub_strings) <= 1:
             return None
 
@@ -78,4 +78,4 @@ class ListenerVoice:
 
     def add_gram(self, extra):
         for phrase in extra:
-            self.grammar.append(f"{key_world} {phrase}")
+            self.grammar.append(f"{self.key_world} {phrase}")
