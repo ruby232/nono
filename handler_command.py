@@ -1,4 +1,4 @@
-from commands.command import Command
+from command import Command
 from config import Config
 from logger import Logger
 

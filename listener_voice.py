@@ -67,10 +67,10 @@ class ListenerVoice:
         return clear
 
     def is_command(self, sentence):
-        return self.key_world in sentence
+        return self.config.key_world in sentence
 
     def extract_command(self, sentence):
-        sub_strings = sentence.split(self.key_world)
+        sub_strings = sentence.split(self.config.key_world)
         if len(sub_strings) <= 1:
             return None
 
@@ -78,4 +78,4 @@ class ListenerVoice:
 
     def add_gram(self, extra):
         for phrase in extra:
-            self.grammar.append(f"{self.key_world} {phrase}")
+            self.grammar.append(f"{self.config.key_world} {phrase}")
