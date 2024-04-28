@@ -9,6 +9,10 @@ class Config(object):
         self.key_world = 'pedro'
         self.model_dir = None
         self.commands = None
+        # Todo: pasar esto para el json
+        self.voice_type = 'GTTS'
+        self.voice_lang = 'es'
+        self.voice_tld = 'es'
         self.load()
 
     def load(self):

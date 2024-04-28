@@ -9,8 +9,9 @@ from handler_command import HandlerCommand
 import json
 
 from shared_data import SharedData
-from voice import Voice
 from threading import Event, Thread
+from voice import Voice
+from voice_factory import VoiceFactory
 
 
 class ListenerVoice:
@@ -22,7 +23,7 @@ class ListenerVoice:
         self.recognizer = None
         self.model_dir = model_dir
         self.texts_queue = []
-        self.voice = Voice()
+        self.voice: Voice = VoiceFactory.create_voice(_config)
         self.handler_command = HandlerCommand(_config, self.voice)
         self.logger = Logger()
         self.grammar = [self.config.key_world, "si", "no", "[unk]"]

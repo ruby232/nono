@@ -95,11 +95,12 @@ Para contribuir subir un [Merger Request](https://gitlab.com/ruby232/nono/-/merg
 
 
 ## Todo
-- Agregar comandos con confirmacion
-- Agregar comandos con argumentos
 - Escribir documentacion
 - Escribir articulo
 
+- Pasar los logs para otra carpeta
+- Obtener listado de palabras ignoradas
+- Agregar comandos con argumentos
 - Agregar palabras al modelo
 - Mostrar palabras ignoradas por el modelo
 - Entrenar modelo con mi voz
@@ -109,3 +110,5 @@ Para contribuir subir un [Merger Request](https://gitlab.com/ruby232/nono/-/merg
 - Hacer que los comandos sean independientes
 - Mejorar el sistema para comprar la comparaciond e frases
 - Agregar como servicio de linux
+- Agregar comandos con confirmacion
+

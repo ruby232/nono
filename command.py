@@ -23,7 +23,7 @@ class Command:
 
     def execute(self, confirm_event: Event, shared_data: SharedData):
         if self.need_confirmation:
-            self.voice.say(f"Diga si para ejecutar.")
+            self.voice.say(f"Diga si para ejecutar, no para abortar.")
             confirm_event.clear()
             confirm_event.wait(5)
             with shared_data.lock:
@@ -31,7 +31,7 @@ class Command:
                     self.voice.say(f"Abortando comando, {self.name}.")
                     return
 
-        self.voice.say(f"Ejecuntando, {self.name}.")
+        self.voice.say(f"Ejecutando, {self.name}.")
         try:
             args = shlex.split(self.run)
             subprocess.Popen(args,
