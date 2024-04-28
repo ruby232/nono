@@ -1,18 +1,19 @@
 import shlex
 import subprocess
+from threading import Event
 
-# from listener_confirmation import ListenerConfirmation
 from logger import Logger
+from shared_data import SharedData
 from voice import Voice
 
 class Command:
-    def __init__(self, _name, _run, _phrases, _voice: Voice):
+    def __init__(self, _name, _run, _phrases,_need_confirmation, _voice: Voice):
         self.logger = Logger()
         self.name = _name
         self.run = _run
         self.phrases = _phrases
         self.voice = _voice
-        # self.listenerConfirmation = ListenerConfirmation()
+        self.need_confirmation = _need_confirmation
 
     def get_phrases(self):
         return self.phrases
@@ -20,14 +21,17 @@ class Command:
     def is_phrase(self, phrase):
         return phrase in self.phrases
 
-    def need_confirmation(self):
-        return True
+    def execute(self, confirm_event: Event, shared_data: SharedData):
+        if self.need_confirmation:
+            self.voice.say(f"Diga si para ejecutar.")
+            confirm_event.clear()
+            confirm_event.wait(5)
+            with shared_data.lock:
+                if not confirm_event.is_set() or not shared_data.confirm_result:
+                    self.voice.say(f"Abortando comando, {self.name}.")
+                    return
 
-    def execute(self):
-        if self.need_confirmation():
-            self.voice.say(f"Esta seguro que desea ejecutar, {self.name}.")
-        #     if not self.listenerConfirmation.confirmation():
-        #         self.voice.say(f"Abortando comando, {self.name}.")
+        self.voice.say(f"Ejecuntando, {self.name}.")
         try:
             args = shlex.split(self.run)
             subprocess.Popen(args,

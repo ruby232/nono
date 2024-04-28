@@ -8,12 +8,15 @@ from logger import Logger
 from handler_command import HandlerCommand
 import json
 
+from shared_data import SharedData
 from voice import Voice
+from threading import Event, Thread
 
 
 class ListenerVoice:
 
-    def __init__(self, model_dir: str, _config: Config):
+    def __init__(self, model_dir: str, _config: Config, _shared_data: SharedData):
+        self.shared_data = _shared_data
         self.config = _config
         self.stream = None
         self.recognizer = None
@@ -23,6 +26,12 @@ class ListenerVoice:
         self.handler_command = HandlerCommand(_config, self.voice)
         self.logger = Logger()
         self.grammar = [self.config.key_world, "si", "no", "[unk]"]
+        self.process_thread = None
+        self.confirm_event = Event()
+
+    def start_listening(self):
+        self.process_thread = Thread(target=self.listen)
+        self.process_thread.start()
 
     def start(self):
         model = Model(self.model_dir)
@@ -47,9 +56,18 @@ class ListenerVoice:
                 text = f"{json_text[14:-3]}"
                 if not text:
                     continue
-                self.process_sentence(text)
 
-    def process_sentence(self, sentence):
+                # Esto es para los comandos con confirmacion
+                if text == "si" or text == "no":
+                    with self.shared_data.lock:
+                        self.shared_data.confirm_result = text == "si"
+                    self.confirm_event.set()
+                    continue
+
+                process_thread = Thread(target=self.process_sentence, args=(text, self.confirm_event, ))
+                process_thread.start()
+
+    def process_sentence(self, sentence: str, confirm_event: Event):
         self.logger.debug("Input text for user: %s", sentence)
 
         clear_sentence = self.clear_string(sentence)
@@ -59,7 +77,7 @@ class ListenerVoice:
         command = self.extract_command(clear_sentence)
         if command:
             self.logger.debug("Extract command: %s", command)
-            self.handler_command.execute_command(command)
+            self.handler_command.execute_command(command, confirm_event, self.shared_data)
             return
 
     def clear_string(self, sentence):

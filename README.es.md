@@ -38,6 +38,7 @@ Crear un fichero json en `~/.config/nono/config.json` con el siguiente contenido
     "commands": [
         {
             "name": "brave",
+            "need_confirmation": true,
             "run": "brave-browser",
             "phrases": [
                 "ejecutar navegador",
@@ -49,7 +50,8 @@ Crear un fichero json en `~/.config/nono/config.json` con el siguiente contenido
 ```
 **model_dir:** Direccion absoluta del modelo vosk
 **key_world:** Palabra clave para disparar los comandos
-**phrases:** Frases despues de *key_world* que va a disparar el comando, entre mas clara y diferente de los demas mejor.
+**phrases:** Son las frases que se debe decir despues de la palabra especificada en *key_world* y es la que va a disparar el comando, entre mas clara y diferente de los demas mejor. Agregar como minimo 4 frases por cada comando.
+**need_confirmation:** Es para los comandos que deben ser verificados para su ejecucion con si o no.
 
 Existen algunas palabras que los modelos no tienen y las ignoran. 
 Falta trabajar en mostrar estas palabras al usuario y/o agregarlas si es posible.

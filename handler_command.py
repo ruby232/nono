@@ -1,7 +1,10 @@
+from threading import Event
+
 from command import Command
 from config import Config
 from logger import Logger
 from nlp import NLP
+from shared_data import SharedData
 from voice import Voice
 
 
@@ -31,13 +34,15 @@ class HandlerCommand:
                 continue
             run = command_conf['run']
 
+            need_confirmation = command_conf.get('need_confirmation')
+
             if 'phrases' not in command_conf:
                 self.logger.error("The key 'phrases' not found in config.")
                 continue
             phrases = command_conf['phrases']
             self.all_phrases.extend(phrases)
 
-            command = Command(name, run, phrases, self.voice)
+            command = Command(name, run, phrases, need_confirmation, self.voice)
             self.commands.append(command)
 
         commands = self.get_commands()
@@ -46,10 +51,10 @@ class HandlerCommand:
     def get_commands(self):
         return self.commands
 
-    def execute_command(self, phrase):
+    def execute_command(self, phrase, confirm_event: Event, shared_data: SharedData):
         command = self.get_command(phrase)
         if command:
-            command.execute()
+            command.execute(confirm_event, shared_data)
             return True
 
         self.voice.say(f"No se encontró comando para la frase, {phrase}")
