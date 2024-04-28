@@ -1,14 +1,18 @@
 from command import Command
 from config import Config
 from logger import Logger
+from nlp import NLP
+from voice import Voice
 
 
 class HandlerCommand:
-    def __init__(self, _config: Config):
+    def __init__(self, _config: Config, _voice: Voice):
+        self.voice = _voice
         self.commands = []
         self.all_phrases = []
         self.config = _config
         self.logger = Logger()
+        self.nlp = None
         self.load()
 
     def load(self):
@@ -33,8 +37,11 @@ class HandlerCommand:
             phrases = command_conf['phrases']
             self.all_phrases.extend(phrases)
 
-            command = Command(name, run, phrases)
+            command = Command(name, run, phrases, self.voice)
             self.commands.append(command)
+
+        commands = self.get_commands()
+        self.nlp = NLP(commands)
 
     def get_commands(self):
         return self.commands
@@ -44,6 +51,8 @@ class HandlerCommand:
         if command:
             command.execute()
             return True
+
+        self.voice.say(f"No se encontró comando para la frase, {phrase}")
         self.logger.debug("Not found command in phrase '%s'", phrase)
         return False
 
@@ -51,6 +60,10 @@ class HandlerCommand:
         for command in self.get_commands():
             if command.is_phrase(phrase):
                 return command
+
+        if self.nlp:
+            return self.nlp.predict(phrase)
+
         return None
 
     def get_phrases(self):

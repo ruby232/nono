@@ -8,6 +8,8 @@ from logger import Logger
 from handler_command import HandlerCommand
 import json
 
+from voice import Voice
+
 
 class ListenerVoice:
 
@@ -17,9 +19,10 @@ class ListenerVoice:
         self.recognizer = None
         self.model_dir = model_dir
         self.texts_queue = []
-        self.handler_command = HandlerCommand(_config)
+        self.voice = Voice()
+        self.handler_command = HandlerCommand(_config, self.voice)
         self.logger = Logger()
-        self.grammar = [self.config.key_world, "[unk]"]
+        self.grammar = [self.config.key_world, "si", "no", "[unk]"]
 
     def start(self):
         model = Model(self.model_dir)
@@ -57,6 +60,7 @@ class ListenerVoice:
         if command:
             self.logger.debug("Extract command: %s", command)
             self.handler_command.execute_command(command)
+            return
 
     def clear_string(self, sentence):
         clear = re.sub(r'\s+', ' ', sentence)

@@ -43,6 +43,7 @@ class Config(object):
         if not os.path.exists(config_file):
             # If the file does not exist, create a sample configuration file
             default_config = {
+                'model_dir': '~/.config/nono/model',
                 'key_world': 'pedro',
                 'commands': [
                     {

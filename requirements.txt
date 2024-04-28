@@ -1,3 +1,5 @@
-vosk
-pyaudio
-scikit-learn
+vosk~=0.3.45
+pyaudio~=0.2.13
+numpy~=1.26.4
+scikit-learn~=1.4.2
+pyttsx3

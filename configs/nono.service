@@ -1,0 +1,11 @@
+[Unit]
+Description=Nono, voice assistent command tool.
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/home/natsu/Proyectos/onebyt/learnings/python/nono
+ExecStart=/usr/bin/python3 main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
