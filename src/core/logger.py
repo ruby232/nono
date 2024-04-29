@@ -2,24 +2,25 @@ import logging
 
 
 class Logger:
+    """
+    Logger class for nono
+    """
     def __init__(self):
-        self.logger = self.get_logger()
+        self.logger = logging.getLogger('nono')
 
     def boot(self):
         self.logger.setLevel(logging.DEBUG)
 
-        logFormatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+        log_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
 
         c_handler = logging.StreamHandler()
-        c_handler.setFormatter(logFormatter)
+        c_handler.setFormatter(log_formatter)
         self.logger.addHandler(c_handler)
 
-        file_handler = logging.FileHandler("debug.log")
-        file_handler.setFormatter(logFormatter)
+        # Todo:  change to debug.log path
+        file_handler = logging.FileHandler("../../debug.log")
+        file_handler.setFormatter(log_formatter)
         self.logger.addHandler(file_handler)
-
-    def get_logger(self):
-        return logging.getLogger('nono')
 
     def debug(self, msg, *args, **kwargs):
         self.logger.debug(msg, *args, **kwargs)

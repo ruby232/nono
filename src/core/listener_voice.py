@@ -1,47 +1,50 @@
 from vosk import Model, KaldiRecognizer
 import pyaudio
-import re
-import unicodedata
 
-from config import Config
-from logger import Logger
-from handler_command import HandlerCommand
 import json
-
-from shared_data import SharedData
 from threading import Event, Thread
-from voice import Voice
-from voice_factory import VoiceFactory
+
+from .logger import Logger
+from .utils import clear_string
+from ..command.handler_command import HandlerCommand
+from .shared_data import SharedData
+from .config import Config
+from ..voice.voice import Voice
+from ..voice.voice_factory import VoiceFactory
 
 
 class ListenerVoice:
+    """
+    Class for listening the voice and process commands.
 
-    def __init__(self, model_dir: str, _config: Config, _shared_data: SharedData):
+    It uses the Vosk library.
+    """
+
+    def __init__(self, _shared_data: SharedData):
         self.shared_data = _shared_data
-        self.config = _config
+        self.config: Config = Config()
+
         self.stream = None
         self.recognizer = None
-        self.model_dir = model_dir
+        self.model_dir = self.config.model_dir
         self.texts_queue = []
-        self.voice: Voice = VoiceFactory.create_voice(_config)
-        self.handler_command = HandlerCommand(_config, self.voice)
+        self.voice: Voice = VoiceFactory.create_voice(self.config)
+        self.handler_command = HandlerCommand(self.config, self.voice)
         self.logger = Logger()
 
-        self.grammar = [self.config.key_world , "[unk]"]
-        self.grammar.extend(_config.extra_gramma)
+        self.grammar = [self.config.key_world, "[unk]"]
+        self.grammar.extend(self.config.extra_gramma)
         self.grammar.extend([self.config.conform_word, self.config.abort_word])
 
-        self.process_thread = None
         self.confirm_event = Event()
 
-    def start_listening(self):
-        self.process_thread = Thread(target=self.listen)
-        self.process_thread.start()
-
     def start(self):
+        """
+        Start listening the voice.
+        """
         model = Model(self.model_dir)
-        extra_gramma = self.handler_command.get_phrases()
-        self.add_gram(extra_gramma)
+        phrases = self.handler_command.get_phrases()
+        self.grammar.extend(phrases)
 
         grammar_str = json.dumps(self.grammar)
         self.recognizer = KaldiRecognizer(model, 16000, grammar_str)
@@ -50,18 +53,22 @@ class ListenerVoice:
         self.stream.start_stream()
 
     def listen(self):
+        """
+        Listen the voice and process commands.
+        """
         if self.stream is None:
             self.start()
 
         while True:
             data = self.stream.read(4096)
             if self.recognizer.AcceptWaveform(data):
-                json_text_str = self.recognizer.FinalResult()
-                json_text = json.loads(json_text_str)
-                text = json_text["text"]
-                self.logger.debug("Text recognizer: %s", text)
+                json_str = self.recognizer.FinalResult()
+                json_text = json.loads(json_str)
+                text = json_text.get("text")
                 if not text:
                     continue
+
+                self.logger.debug("Text recognizer: %s", text)
 
                 # This is for the commands with confirmation.
                 if text in [self.config.conform_word, self.config.conform_word]:
@@ -70,40 +77,38 @@ class ListenerVoice:
                     self.confirm_event.set()
                     continue
 
+                # Need execute this in a thread for listen confirmation.
                 process_thread = Thread(target=self.process_sentence, args=(text, self.confirm_event,))
                 process_thread.start()
 
     def process_sentence(self, sentence: str, confirm_event: Event):
-        self.logger.debug("Input text for user: %s", sentence)
+        """
+        Processing the sentence and which command to execute.
+        """
 
-        clear_sentence = self.clear_string(sentence)
+        self.logger.debug("Input text for user: %s", sentence)
+        clear_sentence = clear_string(sentence)
         if not self.is_command(clear_sentence):
             return
 
         command = self.extract_command(clear_sentence)
-        if command and command not in [self.config.conform_word, self.config.conform_word]:
-            self.logger.debug("Extract command: %s", command)
-            self.handler_command.execute_command(command, confirm_event, self.shared_data)
+        if not command or command in [self.config.conform_word, self.config.conform_word]:
             return
-
-    def clear_string(self, sentence):
-        clear = re.sub(r'\s+', ' ', sentence)
-        clear = ''.join((c for c in unicodedata.normalize('NFD', clear) if unicodedata.category(c) != 'Mn'))
-
-        clear = re.sub(r'[^a-zA-Z\s]', '', clear)
-        clear = clear.lower()
-        return clear
+        self.logger.debug("Extract command: %s", command)
+        self.handler_command.execute_command(command, confirm_event, self.shared_data)
 
     def is_command(self, sentence):
+        """
+        Check if the sentence is a command.
+        """
         return self.config.key_world in sentence
 
     def extract_command(self, sentence):
+        """
+        Extract the command from the sentence.
+        """
         sub_strings = sentence.split(self.config.key_world)
         if len(sub_strings) <= 1:
             return None
 
         return sub_strings[1].strip()
-
-    def add_gram(self, extra):
-        for phrase in extra:
-            self.grammar.append(phrase)

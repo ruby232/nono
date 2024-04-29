@@ -2,6 +2,9 @@ import pyttsx3
 
 
 class VoiceTTSX3():
+    """
+        Class that implements the TTS of the pyttsx3 library.
+    """
     def __init__(self,_lenguaje, _tld):
         super().__init__( _lenguaje, _tld)
         self.engine = pyttsx3.init()

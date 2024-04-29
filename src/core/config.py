@@ -1,9 +1,13 @@
 import json
-import os
-from logger import Logger
+from .logger import Logger
+from .utils import get_config_file_path
 
 
 class Config(object):
+    """
+    Class to manage the configuration of the application.
+    """
+
     def __init__(self):
         self.logger = Logger()
         self.key_world = 'wendy'
@@ -18,7 +22,10 @@ class Config(object):
         self.load()
 
     def load(self):
-        path = self.get_path()
+        """
+        Load the configuration from a JSON file.
+        """
+        path = get_config_file_path()
         self.logger.debug("Load config from file '%s'", path)
         with open(path, 'r') as file:
             config = json.load(file)
@@ -41,31 +48,3 @@ class Config(object):
         self.conform_word = config.get("conform_word", "si")
         self.abort_word = config.get("abort_word", "no")
         self.extra_gramma = config.get("extra_gramma", [])
-
-    def get_path(self):
-        config_dir = os.path.expanduser('~/.config/nono')
-        # Create the directory if it does not exist
-        if not os.path.exists(config_dir):
-            os.makedirs(config_dir)
-
-        config_file = os.path.join(config_dir, 'config.json')
-
-        if not os.path.exists(config_file):
-            # If the file does not exist, create a sample configuration file
-            default_config = {
-                'model_dir': '~/.config/nono/model',
-                'key_world': 'pedro',
-                'commands': [
-                    {
-                        'name': 'brave',
-                        'run': 'brave-browser',
-                        'phrases': [
-                            'ejecutar navegador',
-                            'abrir navegador'
-                        ]
-                    }
-                ]
-            }
-            with open(config_file, 'w') as file:
-                json.dump(default_config, file, indent=4)
-        return config_file
