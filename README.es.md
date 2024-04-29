@@ -2,7 +2,7 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](README.md)
 
 Es un asistente de voz offline personalizable. 
-El objetivo de este projecto es automatizar algunos procesos usando la voz sin enviar mis datos a un servidro externo y 
+El objetivo de este proyecto es automatizar algunos procesos usando la voz sin enviar mis datos a un servidor externo y 
 que no consuma muchos recursos.
 
 Para el reconocimiento de voz se utiliza [Vosk](https://alphacephei.com/vosk/).
@@ -27,7 +27,7 @@ Los pequeños consumen serca de XX de RAM los grande cerca de 4 de RAM.
 │   ├── ivector
 ```
 
-4. Si desea moverlo para otra localizacion ver [Configurar](## Configurar)
+3. Sí desea moverlo para otra localización ver [Configurar](## Configurar)
 
 ## Configurar
 Crear un fichero json en `~/.config/nono/config.json` con el siguiente contenido.
@@ -48,10 +48,10 @@ Crear un fichero json en `~/.config/nono/config.json` con el siguiente contenido
     ]
 }
 ```
-**model_dir:** Direccion absoluta del modelo vosk
+**model_dir:** Dirección absoluta del modelo vosk
 **key_world:** Palabra clave para disparar los comandos
-**phrases:** Son las frases que se debe decir despues de la palabra especificada en *key_world* y es la que va a disparar el comando, entre mas clara y diferente de los demas mejor. Agregar como minimo 4 frases por cada comando.
-**need_confirmation:** Es para los comandos que deben ser verificados para su ejecucion con si o no.
+**phrases:** Son las frases que se debe decir después de la palabra especificada en *key_world* y es la que va a disparar el comando, entre más clara y diferente de los demás mejor.
+**need_confirmation:** Es para los comandos que deben ser verificados para su ejecución con si o no.
 
 Existen algunas palabras que los modelos no tienen y las ignoran. 
 Falta trabajar en mostrar estas palabras al usuario y/o agregarlas si es posible.
@@ -63,27 +63,29 @@ Falta trabajar en mostrar estas palabras al usuario y/o agregarlas si es posible
 mkdir -p ~/.config/systemd/user/
 cp configs/nono.service ~/.config/systemd/user/nono.service
 ```
-3. Cargar la nueva congiguracion
+
+3. Cargar la nueva configuración
 ```shell
 systemctl --user daemon-reload
 ```
-4. Activar y iniciar el servicio 
+
+4. Activar e iniciar el servicio 
 ```shell
 systemctl --user enable nono
 systemctl --user start nono
 ```
 
-5. Reiniciar
+5. Reiniciar el servicio
 ```shell
 systemctl --user restart nono
 ```
 
-Ver estado 
+Ver estado del servicio
 ```shell
 systemctl --user status nono
 ```
 
-Como eliminarlo
+Como eliminarlo el servicio
 ```shell
 systemctl --user stop nono
 systemctl --user disable nono
@@ -95,10 +97,10 @@ Para contribuir subir un [Merger Request](https://gitlab.com/ruby232/nono/-/merg
 
 
 ## Todo
-- Agregar reconocimeinto de speaker - Ver de que va este ejempo https://github.com/alphacep/vosk-api/blob/master/python/example/test_speaker.py
-- Escribir documentacion
-- Escribir articulo
-- Obtener le listado de comando disponibles
+- Agregar reconocimiento de speaker - Ver que va este ejemplo https://github.com/alphacep/vosk-api/blob/master/python/example/test_speaker.py
+
+- Escribir artículo
+- Obtener el listado de comando disponible
 
 - Pasar los logs para otra carpeta
 - Obtener listado de palabras ignoradas
@@ -106,11 +108,11 @@ Para contribuir subir un [Merger Request](https://gitlab.com/ruby232/nono/-/merg
 - Agregar palabras al modelo
 - Mostrar palabras ignoradas por el modelo
 - Entrenar modelo con mi voz
-- Hacer una interfza grafica
+- Hacer una interfaz gráfica
 
 ## Done
+- Escribir documentación
 - Hacer que los comandos sean independientes
-- Mejorar el sistema para comprar la comparaciond e frases
-- Agregar como servicio de linux
-- Agregar comandos con confirmacion
-
+- Mejorar el sistema para comprar la comparación de frases
+- Agregar como servicio de Linux
+- Agregar comandos con confirmación
