@@ -95,8 +95,10 @@ Para contribuir subir un [Merger Request](https://gitlab.com/ruby232/nono/-/merg
 
 
 ## Todo
+- Agregar reconocimeinto de speaker - Ver de que va este ejempo https://github.com/alphacep/vosk-api/blob/master/python/example/test_speaker.py
 - Escribir documentacion
 - Escribir articulo
+- Obtener le listado de comando disponibles
 
 - Pasar los logs para otra carpeta
 - Obtener listado de palabras ignoradas

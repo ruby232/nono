@@ -26,7 +26,11 @@ class ListenerVoice:
         self.voice: Voice = VoiceFactory.create_voice(_config)
         self.handler_command = HandlerCommand(_config, self.voice)
         self.logger = Logger()
-        self.grammar = [self.config.key_world, "si", "no", "[unk]"]
+
+        self.grammar = [self.config.key_world , "[unk]"]
+        self.grammar.extend(_config.extra_gramma)
+        self.grammar.extend([self.config.conform_word, self.config.abort_word])
+
         self.process_thread = None
         self.confirm_event = Event()
 
@@ -52,20 +56,21 @@ class ListenerVoice:
         while True:
             data = self.stream.read(4096)
             if self.recognizer.AcceptWaveform(data):
-                json_text = self.recognizer.FinalResult()
-                self.logger.debug("Text recognizer: %s", json_text)
-                text = f"{json_text[14:-3]}"
+                json_text_str = self.recognizer.FinalResult()
+                json_text = json.loads(json_text_str)
+                text = json_text["text"]
+                self.logger.debug("Text recognizer: %s", text)
                 if not text:
                     continue
 
-                # Esto es para los comandos con confirmacion
-                if text == "si" or text == "no":
+                # This is for the commands with confirmation.
+                if text in [self.config.conform_word, self.config.conform_word]:
                     with self.shared_data.lock:
-                        self.shared_data.confirm_result = text == "si"
+                        self.shared_data.confirm_result = text == self.config.conform_word
                     self.confirm_event.set()
                     continue
 
-                process_thread = Thread(target=self.process_sentence, args=(text, self.confirm_event, ))
+                process_thread = Thread(target=self.process_sentence, args=(text, self.confirm_event,))
                 process_thread.start()
 
     def process_sentence(self, sentence: str, confirm_event: Event):
@@ -76,7 +81,7 @@ class ListenerVoice:
             return
 
         command = self.extract_command(clear_sentence)
-        if command:
+        if command and command not in [self.config.conform_word, self.config.conform_word]:
             self.logger.debug("Extract command: %s", command)
             self.handler_command.execute_command(command, confirm_event, self.shared_data)
             return
@@ -101,4 +106,4 @@ class ListenerVoice:
 
     def add_gram(self, extra):
         for phrase in extra:
-            self.grammar.append(f"{self.config.key_world} {phrase}")
+            self.grammar.append(phrase)

@@ -6,13 +6,15 @@ from logger import Logger
 class Config(object):
     def __init__(self):
         self.logger = Logger()
-        self.key_world = 'pedro'
+        self.key_world = 'wendy'
         self.model_dir = None
         self.commands = None
-        # Todo: pasar esto para el json
         self.voice_type = 'GTTS'
         self.voice_lang = 'es'
         self.voice_tld = 'es'
+        self.extra_gramma = []
+        self.abort_word = None
+        self.conform_word = None
         self.load()
 
     def load(self):
@@ -20,21 +22,25 @@ class Config(object):
         self.logger.debug("Load config from file '%s'", path)
         with open(path, 'r') as file:
             config = json.load(file)
+        self.key_world = config.get("key_world")
 
-        if "key_world" in config:
-            self.key_world = config["key_world"]
-        else:
+        if self.key_world is None:
             self.logger.error("Key 'key_world' not found in config")
 
-        if "commands" in config:
-            self.commands = config["commands"]
-        else:
+        self.commands = config.get("commands")
+        if self.commands is None:
             self.logger.error("Key 'commands' not found in config")
 
-        if "model_dir" in config:
-            self.model_dir = config["model_dir"]
-        else:
+        self.model_dir = config.get("model_dir")
+        if self.model_dir is None:
             self.logger.error("Key 'model_dir' not found in config")
+
+        self.voice_type = config.get("voice_type", 'GTTS')
+        self.voice_lang = config.get("voice_lang", 'es')
+        self.voice_tld = config.get("voice_tld", 'es')
+        self.conform_word = config.get("conform_word", "si")
+        self.abort_word = config.get("abort_word", "no")
+        self.extra_gramma = config.get("extra_gramma", [])
 
     def get_path(self):
         config_dir = os.path.expanduser('~/.config/nono')
