@@ -1,0 +1,86 @@
+{
+  "key_world": "wendy",
+  "model_dir": "/home/user/.config/nono/models/vosk-model-small-es-0.42/",
+  "extra_gramma" : ["windows"],
+  "commands": [
+    {
+      "name": "brave",
+      "run": "brave-browser",
+      "phrases": [
+        "brave",
+        "ejecuta navegador",
+        "navegador personal",
+        "google"
+      ]
+    },
+    {
+      "name": "whatsapp",
+      "run": "brave-browser https://web.whatsapp.com/",
+      "phrases": [
+        "whatsapp",
+        "abrir whatsapp",
+        "muestra whatsapp",
+        "abre whatsapp"
+      ]
+    },
+    {
+      "name": "slack",
+      "run": "slack",
+      "phrases": [
+        "slack",
+        "abrir slack",
+        "ejecuta el slack",
+        "muestra el slack"
+      ]
+    },
+    {
+      "name": "phpstorm",
+      "run": "phpstorm",
+      "phrases": [
+        "ide php",
+        "php",
+        "programar php",
+        "programa para programar"
+      ]
+    },
+    {
+      "name": "discord",
+      "run": "discord",
+      "phrases": [
+        "discord",
+        "disco",
+        "discorde",
+        "abre discord"
+      ]
+    },
+    {
+      "name": "firefox",
+      "run": "firefox",
+      "phrases": [
+        "firefox",
+        "abrir firefox",
+        "ejecuta firefox"
+      ]
+    },
+    {
+      "name": "youtube",
+      "run": "firefox https://youtube.com",
+      "phrases": [
+        "youtube",
+        "plataforma roja",
+        "videos en linea"
+      ]
+    },
+    {
+      "name": "apagar-laptop",
+      "run": "shutdown -h +1",
+      "need_confirmation": true,
+      "phrases": [
+        "apaga laptop",
+        "apaga pc",
+        "apagar laptop",
+        "apaga computadora"
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@ Para el reconocimiento de voz se utiliza [Vosk](https://alphacephei.com/vosk/).
 ## Instalar 
 ### Instalar dependencias
 ```shell
-sudo apt install espeak # Para poder usar pyttsx3
+sudo apt install espeak # Solo se se va a usar pyttsx3
 pip install -r requirements. txt 
 ```
 
@@ -80,9 +80,10 @@ systemctl --user start nono
 systemctl --user restart nono
 ```
 
-Ver estado del servicio
+Ver estado del servicio y logs
 ```shell
 systemctl --user status nono
+journalctl -u nono
 ```
 
 Como eliminarlo el servicio
@@ -98,15 +99,13 @@ Para contribuir subir un [Merger Request](https://gitlab.com/ruby232/nono/-/merg
 
 ## Todo
 - Agregar reconocimiento de speaker - Ver que va este ejemplo https://github.com/alphacep/vosk-api/blob/master/python/example/test_speaker.py
-
-- Escribir artículo
+- Usar otra tecnologia para el reconocimiento de voz y que sea configurable
+- Probarlo en wondows (yo no )
 - Obtener el listado de comando disponible
-
 - Pasar los logs para otra carpeta
 - Obtener listado de palabras ignoradas
 - Agregar comandos con argumentos
 - Agregar palabras al modelo
-- Mostrar palabras ignoradas por el modelo
 - Entrenar modelo con mi voz
 - Hacer una interfaz gráfica
 
@@ -116,3 +115,4 @@ Para contribuir subir un [Merger Request](https://gitlab.com/ruby232/nono/-/merg
 - Mejorar el sistema para comprar la comparación de frases
 - Agregar como servicio de Linux
 - Agregar comandos con confirmación
+- Escribir artículo
