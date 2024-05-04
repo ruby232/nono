@@ -57,6 +57,7 @@ Existen algunas palabras que los modelos no tienen y las ignoran.
 Falta trabajar en mostrar estas palabras al usuario y/o agregarlas si es posible.
 
 ## Agregar como servicio de Linux
+> NOTA: Esto no funcionó, después que lo analice lo quito. Creo que es mejor hacer que inicié con la session del usuario. 
 1. Cambiar el directorio donde se encuentra el script en el fichero `configs/nono.service` linea `WorkingDirectory`.
 2. Copiar fichero a la carpeta de `systemd`
 ```shell

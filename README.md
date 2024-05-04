@@ -57,6 +57,7 @@ There are some words that the models do not have and ignore them.
 There is still work to be done to show these words to the user and/or add them if possible.
 
 ## Add as Linux service
+> NOTE: This did not work, after I analyze it I will remove it. I think it is better to make it start with the user's session.
 1. Change the directory where the script is located in the `configs/nono.service` file to the `WorkingDirectory` line.
 2. Copy file to `systemd` folder.
 
