@@ -4,7 +4,6 @@ from .command import Command
 from ..core.config import Config
 from ..core.logger import Logger
 from ..core.nlp import NLP
-from ..core.shared_data import SharedData
 from ..voice.voice import Voice
 
 
@@ -40,15 +39,13 @@ class HandlerCommand:
                 continue
             run = command_conf['run']
 
-            need_confirmation = command_conf.get('need_confirmation')
-
             if 'phrases' not in command_conf:
                 self.logger.error("The key 'phrases' not found in config.")
                 continue
             phrases = command_conf['phrases']
             self.all_phrases.extend(phrases)
 
-            command = Command(name, run, phrases, need_confirmation, self.voice)
+            command = Command(name, run, phrases, self.voice)
             self.commands.append(command)
 
         commands = self.get_commands()
@@ -57,10 +54,10 @@ class HandlerCommand:
     def get_commands(self):
         return self.commands
 
-    def execute_command(self, phrase, confirm_event: Event, shared_data: SharedData):
+    def execute_command(self, phrase):
         command = self.get_command(phrase)
         if command:
-            command.execute(confirm_event, shared_data)
+            command.execute()
             return True
 
         # @todo:  poner los textos en el idioma configurado

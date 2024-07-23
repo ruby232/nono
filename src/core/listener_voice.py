@@ -7,7 +7,6 @@ from threading import Event, Thread
 from .logger import Logger
 from .utils import clear_string
 from ..command.handler_command import HandlerCommand
-from .shared_data import SharedData
 from .config import Config
 from ..voice.voice import Voice
 from ..voice.voice_factory import VoiceFactory
@@ -20,8 +19,7 @@ class ListenerVoice:
     It uses the Vosk library.
     """
 
-    def __init__(self, _shared_data: SharedData):
-        self.shared_data = _shared_data
+    def __init__(self):
         self.config: Config = Config()
 
         self.stream = None
@@ -34,9 +32,8 @@ class ListenerVoice:
 
         self.grammar = [self.config.key_world, "[unk]"]
         self.grammar.extend(self.config.extra_gramma)
-        self.grammar.extend([self.config.conform_word, self.config.abort_word])
-
-        self.confirm_event = Event()
+        self.grammar.extend([self.config.pause_word, self.config.continue_word])
+        self.pause = False
 
     def start(self):
         """
@@ -70,18 +67,10 @@ class ListenerVoice:
 
                 self.logger.debug("Text recognizer: %s", text)
 
-                # This is for the commands with confirmation.
-                if text in [self.config.conform_word, self.config.conform_word]:
-                    with self.shared_data.lock:
-                        self.shared_data.confirm_result = text == self.config.conform_word
-                    self.confirm_event.set()
-                    continue
-
-                # Need execute this in a thread for listen confirmation.
-                process_thread = Thread(target=self.process_sentence, args=(text, self.confirm_event,))
+                process_thread = Thread(target=self.process_sentence, args=(text))
                 process_thread.start()
 
-    def process_sentence(self, sentence: str, confirm_event: Event):
+    def process_sentence(self, sentence: str):
         """
         Processing the sentence and which command to execute.
         """
@@ -92,10 +81,22 @@ class ListenerVoice:
             return
 
         command = self.extract_command(clear_sentence)
-        if not command or command in [self.config.conform_word, self.config.conform_word]:
+
+        if command == self.config.pause_word:
+            self.pause = True
+            return
+
+        if self.pause and command == self.config.continue_word:
+            self.pause = False
+            return
+
+        if self.pause:
+            return
+
+        if not command:
             return
         self.logger.debug("Extract command: %s", command)
-        self.handler_command.execute_command(command, confirm_event, self.shared_data)
+        self.handler_command.execute_command(command)
 
     def is_command(self, sentence):
         """

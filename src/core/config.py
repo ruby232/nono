@@ -9,6 +9,8 @@ class Config(object):
     """
 
     def __init__(self):
+        self.continue_word = None
+        self.pause_word = None
         self.logger = Logger()
         self.key_world = 'wendy'
         self.model_dir = None
@@ -17,8 +19,6 @@ class Config(object):
         self.voice_lang = 'es'
         self.voice_tld = 'es'
         self.extra_gramma = []
-        self.abort_word = None
-        self.conform_word = None
         self.load()
 
     def load(self):
@@ -45,6 +45,6 @@ class Config(object):
         self.voice_type = config.get("voice_type", 'GTTS')
         self.voice_lang = config.get("voice_lang", 'es')
         self.voice_tld = config.get("voice_tld", 'es')
-        self.conform_word = config.get("conform_word", "si")
-        self.abort_word = config.get("abort_word", "no")
         self.extra_gramma = config.get("extra_gramma", [])
+        self.pause_word = config.get("pause_word", "pausa")
+        self.continue_word = config.get("continue_word", "continua")

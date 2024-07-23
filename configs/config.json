@@ -70,17 +70,6 @@
         "plataforma roja",
         "videos en linea"
       ]
-    },
-    {
-      "name": "apagar-laptop",
-      "run": "shutdown -h +1",
-      "need_confirmation": true,
-      "phrases": [
-        "apaga laptop",
-        "apaga pc",
-        "apagar laptop",
-        "apaga computadora"
-      ]
     }
   ]
 }
