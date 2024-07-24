@@ -1,5 +1,3 @@
-from threading import Event
-
 from .command import Command
 from ..core.config import Config
 from ..core.logger import Logger

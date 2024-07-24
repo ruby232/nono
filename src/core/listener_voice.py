@@ -2,7 +2,6 @@ from vosk import Model, KaldiRecognizer
 import pyaudio
 
 import json
-from threading import Event, Thread
 
 from .logger import Logger
 from .utils import clear_string
@@ -67,8 +66,7 @@ class ListenerVoice:
 
                 self.logger.debug("Text recognizer: %s", text)
 
-                process_thread = Thread(target=self.process_sentence, args=(text))
-                process_thread.start()
+                self.process_sentence(text)
 
     def process_sentence(self, sentence: str):
         """
