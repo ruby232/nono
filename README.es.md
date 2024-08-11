@@ -11,7 +11,11 @@ Para el reconocimiento de voz se utiliza [Vosk](https://alphacephei.com/vosk/).
 ### Instalar dependencias
 ```shell
 sudo apt install espeak # Solo se se va a usar pyttsx3
-pip install -r requirements. txt 
+sudo apt-get install portaudio19-dev
+# crear un entorno virtual
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt 
 ```
 
 ### Descargar modelo 

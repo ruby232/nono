@@ -3,8 +3,8 @@ Description=Nono, voice assistent command tool.
 After=default.target
 
 [Service]
-WorkingDirectory=/home/natsu/Proyectos/onebyt/learnings/python/nono
-ExecStart=/usr/bin/python3 main.py
+WorkingDirectory=/absolute-path/nono
+ExecStart=/absolute-path/nono/venv/bin/python main.py
 Restart=always
 
 [Install]
